@@ -17,6 +17,7 @@ from pylons import config
 from owslib import wms
 import requests
 from lxml import etree
+from os import path, listdir, environ
 
 from ckan import plugins as p
 from ckan import model
@@ -396,7 +397,23 @@ class SpatialHarvester(HarvesterBase):
                             'resource_locator_function': resource_locator.get('function') or '',
                         })
                     package_dict['resources'].append(resource)
-
+        else:
+            metadata_folder =environ['METADATA_FOLDER']
+            guid = iso_values.get('guid')
+            for folders in listdir(metadata_folder):
+                print(folders)
+                folder_path = path.join(metadata_folder,folders)
+                folder_content = listdir(folder_path)
+                if "{}.xml".format(guid) in folder_content:
+                    folder_content.remove("{}.xml".format(guid))
+                    for files in folder_content:
+                        resource = {
+                         'name': files.split(".")[0],
+                         'url': files,
+                         'format': files.split(".")[1],
+                         'upload': open(path.join(folder_path,files), 'rb')}
+                        package_dict['resources'].append(resource)
+                break
 
         # Add default_extras from config
         default_extras = self.source_config.get('default_extras',{})
