@@ -400,7 +400,7 @@ class SpatialHarvester(HarvesterBase):
                     for files in folder_content:
                         resource = {
                             'name': files.split(".")[0],
-                            'url': "{}/data/{}/{}".format(str(environ['CKAN_SITE_URL']), guid,files),
+                            'url': "{}/data/{}/{}/".format(str(environ['CKAN_SITE_URL']), guid,files),
                             'format': files.split(".")[1]}
                         package_dict['resources'].append(resource)
                         break
