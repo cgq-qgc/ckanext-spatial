@@ -391,19 +391,19 @@ class SpatialHarvester(HarvesterBase):
                     package_dict['resources'].append(resource)
         try:
             metadata_folder = environ['METADATA_FOLDER']
-            for folders in listdir(metadata_folder):
-                folder_path = path.join(metadata_folder, folders)
-                folder_content = listdir(folder_path)
-                guid = iso_values.get('guid')
-                if "{}.xml".format(guid) in folder_content:
-                    folder_content.remove("{}.xml".format(guid))
-                    for files in folder_content:
+            guid = iso_values.get('guid')
+            folder_path = path.join(metadata_folder, guid)
+            folder_content = listdir(folder_path)
+            if "{}.xml".format(guid) in folder_content:
+                folder_content.remove("{}.xml".format(guid))
+                for files in folder_content:
+                    if ".xml" not in files:
                         resource = {
                             'name': files.split(".")[0],
                             'url': "{}/data/{}/{}/".format(str(environ['CKAN_SITE_URL']), guid,files),
                             'format': files.split(".")[1]}
                         package_dict['resources'].append(resource)
-                        break
+
         except:
             pass
         # Add default_extras from config
